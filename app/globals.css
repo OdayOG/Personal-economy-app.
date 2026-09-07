@@ -1,140 +1,279 @@
-/* FARVER: genbruges på hele siden. */
-:root {
-  --page-background: #f8fafc;
-  --main-text: #0f172a;
-  --secondary-text: #475569;
-  --primary-color: #059669;
-  --primary-color-hover: #047857;
-  --card-background: #ffffff;
-  --border-color: #cbd5e1;
-}
-
-/* Gør størrelser på elementer lettere at forudsige. */
+/* Grundindstillinger for hele siden */
 * {
   box-sizing: border-box;
 }
 
-/* Grundlæggende styling for hele siden. */
 body {
   margin: 0;
-  background: var(--page-background);
-  color: var(--main-text);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #eaf1f8;
+  color: #24344d;
+  font-family: Arial, sans-serif;
 }
 
-/* Den yderste beholder for forsiden. */
-.landing-page {
+/* Hele forsiden */
+.homepage {
   min-height: 100vh;
+  padding: 0;
 }
 
-/* Den store introduktionssektion øverst på forsiden. */
-.hero-section {
-  width: min(100% - 3rem, 1024px);
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 5rem 0;
+/* Menuen øverst */
+.top-menu {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: #01426b;
+  Padding: 28px 80px;
+
+  
+
 }
 
-/* Den lille grønne tekst over hovedoverskriften. */
-.app-label {
-  margin: 0 0 1rem;
-  color: var(--primary-color);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* Overskrift og forklaring. */
-.hero-heading {
-  max-width: 720px;
+.app-name {
   margin: 0;
-  font-size: clamp(2.75rem, 7vw, 4rem);
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+.menu-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.menu-links a {
+  color: white;
+  text-decoration: none;
+}
+
+.login-button {
+  border: 1px solid #426a9f;
+  border-radius: 8px;
+  padding: 10px 18px;
+  background-color: transparent;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Velkomstområdet */
+.welcome-section {
+  min-height: 1100px;
+  padding: 130px 80px;
+
+  background-image:
+    linear-gradient(
+      to right,
+      #eaf1f8 35%,
+      rgba(234, 241, 248, 0.25) 70%,
+      transparent
+    ),
+    url("/images/lommeregner.png.png");
+
+  background-repeat: no-repeat;
+  background-position: center, right center;
+  background-size: 80% 100%, 70% auto;
+  position: relative;
+  overflow: hidden;
+
+}
+  .welcome-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 180px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    #eaf1f8
+  );
+
+  pointer-events: none;
+}
+
+
+
+.small-title {
+  color: #426a9f;
+  font-weight: bold;
+  line-height: 3;
+}
+
+.welcome-section h1 {
+  margin: 16px 0;
+  font-size: 56px;
   line-height: 1.1;
 }
 
-.hero-description {
-  max-width: 640px;
-  margin: 1.5rem 0 0;
-  color: var(--secondary-text);
-  font-size: 1.125rem;
-  line-height: 1.7;
+.welcome-text {
+  max-width: 560px;
+  font-size: 20px;
+  line-height: 1.6;
 }
 
-/* De to knapper. */
-.button-group {
+/* Knapper */
+.welcome-buttons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 16px;
+  margin-top: 32px;
 }
 
-button {
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  font: inherit;
-  font-weight: 700;
+.primary-button,
+.secondary-button {
+  border-radius: 8px;
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .primary-button {
-  border: 1px solid var(--primary-color);
-  background: var(--primary-color);
+  border: 1px solid #3e9b6d;
+  background-color: #3e9b6d;
   color: white;
 }
 
-.primary-button:hover {
-  background: var(--primary-color-hover);
-}
-
 .secondary-button {
-  border: 1px solid var(--border-color);
-  background: transparent;
-  color: var(--secondary-text);
+  border: 1px solid #01426b;
+  background-color: transparent;
+  color: #24344d;
 }
 
-.secondary-button:hover {
-  background: #f1f5f9;
+/* Funktionssektionen */
+.features-section {
+  padding: 110px 80px;
+  background-color:#eaf1f8;
+  text-align: center;
 }
 
-/* De tre informationskort. */
-.feature-list {
+
+.features-section h2 {
+  margin: 16px 0;
+  color: #24344d;
+  font-size: 42px;
+}
+
+.features-description {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #52647d;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* De tre kort */
+.feature-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 4rem;
+  gap: 24px;
+
+  max-width: 1100px;
+  margin: 48px auto 0;
 }
 
 .feature-card {
-  border-radius: 0.75rem;
-  background: var(--card-background);
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgb(15 23 42 / 12%);
+  padding: 32px;
+  border: 1px solid #9bb8d6;
+  border-radius: 16px;
+  background-color: #568bb064;
+  text-align: left;
 }
 
-.feature-card h2 {
-  margin: 0;
-  font-size: 1rem;
+.feature-card h3 {
+  margin-top: 0;
+  color: #426a9f;
+  font-size: 24px;
 }
 
 .feature-card p {
-  margin: 0.5rem 0 0;
-  color: var(--secondary-text);
-  font-size: 0.9rem;
-  line-height: 1.5;
+  margin-bottom: 0;
+  color: #52647d;
+  line-height: 1.6;
+}
+/* Sektionen: Sådan virker det */
+.steps-section {
+  padding: 110px 80px;
+  background-color: white;
+  text-align: center;
 }
 
-/* På små skærme vises kortene under hinanden. */
-@media (max-width: 700px) {
-  .hero-section {
-    width: min(100% - 2rem, 1024px);
-    padding: 3rem 0;
-  }
+.steps-section h2 {
+  margin: 16px 0 48px;
+  color: #24344d;
+  font-size: 42px;
+}
 
-  .feature-list {
-    grid-template-columns: 1fr;
-  }
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.step {
+  text-align: left;
+}
+
+.step-number {
+  margin: 0 0 16px;
+  color: #4f9d72;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.step h3 {
+  margin: 0 0 12px;
+  color: #24344d;
+  font-size: 24px;
+}
+
+.step p {
+  margin: 0;
+  color: #52647d;
+  line-height: 1.6;
+}
+/* Afsluttende opfordring */
+.cta-section {
+  padding: 110px 80px;
+  background-color: #243b5a;
+  color: white;
+  text-align: center;
+}
+
+.cta-section .small-title {
+  color: #71c597;
+}
+
+.cta-section h2 {
+  margin: 16px 0;
+  font-size: 42px;
+}
+
+.cta-section p {
+  max-width: 600px;
+  margin: 0 auto 32px;
+  color: #dce8f5;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.cta-section .primary-button {
+  border-color: #4f9d72;
+  background-color: #4f9d72;
+}
+.feature-image {
+  display: block;
+  width: 140px;
+  height: 120px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 20px;
+
 }

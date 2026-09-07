@@ -33,7 +33,7 @@ Appen skal gøre det nemt at:
 
 1. Åbn projektmappen i VS Code.
 2. Åbn en terminal.
-3. Kør:
+3. Kør kommandoen:
 
 ```powershell
 npm.cmd run dev

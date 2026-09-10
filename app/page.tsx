@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -9,7 +10,9 @@ export default function Home() {
         <nav className="menu-links">
           <a href="#funktioner">Funktioner</a>
           <a href="#om-appen">Om appen</a>
-          <button className="login-button">Log ind</button>
+          <Link href="/log-ind" className="login-button">
+            Log ind
+          </Link>
         </nav>
       </header>
 
@@ -26,7 +29,9 @@ export default function Home() {
         </p>
 
         <div className="welcome-buttons">
-          <button className="primary-button">Opret konto</button>
+          <Link href="/opret-konto" className="primary-button">
+            Opret konto
+            </Link>
           <button className="secondary-button">Se funktioner</button>
         </div>
       </section>
@@ -69,8 +74,8 @@ export default function Home() {
        <Image
       src="/images/overblik.png.png"
       alt="Illustration af overblik"
-      width={280}
-      height={280}
+      width={140}
+      height={140}
       className="feature-image"
       />
 
@@ -114,8 +119,11 @@ export default function Home() {
     budgetter.
   </p>
 
-  <button className="primary-button">Opret konto</button>
+  <Link href="/opret-konto" className="primary-button">
+  Opret konto
+</Link>
 </section>
     </main>
   );
 }
+

@@ -277,3 +277,62 @@ body {
   margin-bottom: 20px;
 
 }
+
+.account-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 20px;
+  background: #eaf1f8;
+}
+
+.account-card {
+  width: min(100%, 440px);
+  padding: 40px;
+  border: 1px solid #cbd9eb;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 18px 45px rgba(31, 61, 99, 0.12);
+}
+
+.account-card h1 {
+  margin: 8px 0 12px;
+  color: #1f3d63;
+}
+
+.account-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.account-form label {
+  margin-top: 8px;
+  color: #1f3d63;
+  font-weight: bold;
+}
+
+.account-form input {
+  padding: 12px;
+  border: 1px solid #b8cbe3;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.account-form button {
+  margin-top: 16px;
+  padding: 13px;
+  border: 0;
+  border-radius: 8px;
+  background: #1f4a78;
+  color: white;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-link {
+  color: #1f4a78;
+  font-weight: bold;
+  text-decoration: none;
+}

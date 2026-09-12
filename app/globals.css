@@ -926,3 +926,19 @@ body {
 .back-dashboard-link:hover {
   text-decoration: underline;
 }
+.month-selector {
+  display: grid;
+  gap: 5px;
+  color: #6b86aa;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.month-selector input {
+  padding: 10px;
+  border: 1px solid #c7d7e8;
+  border-radius: 8px;
+  background: white;
+  color: #263850;
+  font: inherit;
+}

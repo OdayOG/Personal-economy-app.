@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { deleteSession, getCurrentUser } from "@/app/lib/session";
 import { prisma } from "@/app/lib/prisma";
+import MonthSelector from "./month-selector";
 
 
 function formatAmount(amount: number) {
@@ -87,16 +88,37 @@ async function redigerTransaktion(formData: FormData) {
   revalidatePath("/oversigt");
 }
 
-export default async function OversigtPage() {
+type OversigtPageProps = {
+  searchParams: Promise<{ month?: string }>;
+};
+
+export default async function OversigtPage({
+  searchParams,
+}: OversigtPageProps) {
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/log-ind");
   }
+    const { month } = await searchParams;
+  const defaultMonth = new Date().toISOString().slice(0, 7);
+
+  const selectedMonth =
+    month && /^\d{4}-\d{2}$/.test(month) ? month : defaultMonth;
+
+  const [year, monthNumber] = selectedMonth.split("-").map(Number);
+
+  const monthStart = new Date(year, monthNumber - 1, 1);
+  const nextMonth = new Date(year, monthNumber, 1);
 
   const transactions = await prisma.transaction.findMany({
-    where: {
-      userId: user.id,
+   where: {
+  userId: user.id,
+  date: {
+    gte: monthStart,
+    lt: nextMonth,
+  },
+
     },
     orderBy: {
       date: "desc",
@@ -173,7 +195,8 @@ export default async function OversigtPage() {
               <h1>Goddag, {user.name}!</h1>
               <p>Her er status på din økonomi.</p>
             </div>
-
+            
+            <MonthSelector selectedMonth={selectedMonth} />
             <a className="add-transaction-link" href="/oversigt/tilfoej-ny-transaktion">
               + Tilføj transaktion
             </a>

@@ -60,39 +60,42 @@ body {
 
 /* Velkomstområdet */
 .welcome-section {
-  min-height: 1100px;
+  min-height: 1200px;
   padding: 130px 80px;
+  background-color: #eaf1f8;
 
   background-image:
     linear-gradient(
       to right,
-      #eaf1f8 35%,
-      rgba(234, 241, 248, 0.25) 70%,
-      transparent
+      #eaf1f8 0%,
+      #eaf1f8 30%,
+      rgba(234, 241, 248, 0.85) 45%,
+      rgba(234, 241, 248, 0.2) 65%,
+      rgba(234, 241, 248, 0) 80%
     ),
     url("/images/lommeregner.png.png");
 
   background-repeat: no-repeat;
-  background-position: center, right center;
-  background-size: 80% 100%, 70% auto;
+  background-position: center, left 1100px center;
+  background-size: 100% 100%, 35% auto;
+  background-blend-mode: normal, multiply;
+
   position: relative;
   overflow: hidden;
-
 }
-  .welcome-section::after {
+
+.welcome-section::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-
-  height: 180px;
+  height: 60px;
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0),
     #eaf1f8
   );
-
   pointer-events: none;
 }
 
@@ -130,6 +133,7 @@ body {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .primary-button {
@@ -146,7 +150,8 @@ body {
 
 /* Funktionssektionen */
 .features-section {
-  padding: 110px 80px;
+  min-height: 80vh;
+  padding: 110px 80px 170px;
   background-color:#eaf1f8;
   text-align: center;
 }
@@ -170,7 +175,7 @@ body {
 .feature-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 40px;
 
   max-width: 1100px;
   margin: 48px auto 0;
@@ -197,7 +202,7 @@ body {
 }
 /* Sektionen: Sådan virker det */
 .steps-section {
-  padding: 110px 80px;
+  padding: 170px 80px 100px ;
   background-color: white;
   text-align: center;
 }
@@ -918,14 +923,26 @@ body {
 }
 
 .back-dashboard-link {
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: #e7f0f9;
+  color: #31455f;
+  font-size: 14px;
   font-weight: bold;
   text-decoration: none;
 }
 
 .back-dashboard-link:hover {
-  text-decoration: underline;
+  background: #d9e7f5;
+  text-decoration: none;
 }
+
+.back-dashboard-link + .eyebrow {
+  margin-top: 26px;
+}
+
 .month-selector {
   display: grid;
   gap: 5px;
@@ -1106,4 +1123,25 @@ body {
   .budget-overview-grid {
     grid-template-columns: 1fr;
   }
+}
+.history-page-panel {
+  width: min(900px, 100%);
+  margin: 34px auto;
+  padding: 36px;
+  border: 1px solid #d5e2ef;
+  border-radius: 20px;
+  background: white;
+}
+
+.history-page-panel .back-dashboard-link {
+  color: #31455f;
+}
+
+.history-page-panel h1 {
+  margin: 22px 0 8px;
+  color: #263850;
+}
+
+.history-page-panel > p {
+  color: #647b9e;
 }

@@ -32,7 +32,9 @@ export default function Home() {
           <Link href="/opret-konto" className="primary-button">
             Opret konto
             </Link>
-          <button className="secondary-button">Se funktioner</button>
+          <a href="#funktioner" className="secondary-button">
+  Se funktioner
+</a>
         </div>
       </section>
       <section className="features-section" id="funktioner">

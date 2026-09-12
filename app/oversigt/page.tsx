@@ -5,6 +5,7 @@ import { prisma } from "@/app/lib/prisma";
 import MonthSelector from "./month-selector";
 
 
+
 function formatAmount(amount: number) {
   return new Intl.NumberFormat("da-DK", {
     minimumFractionDigits: 2,
@@ -160,6 +161,7 @@ export default async function OversigtPage({
   const categoryItems = Object.entries(categories).sort(
     ([, firstAmount], [, secondAmount]) => secondAmount - firstAmount
   );
+  
 
   const largestCategoryAmount = Math.max(
     ...categoryItems.map(([, amount]) => amount),
@@ -204,9 +206,9 @@ export default async function OversigtPage({
             <a className="active" href="/oversigt">
               Oversigt
             </a>
-            <a href="#transaktioner">Transaktioner</a>
+            <a href="/oversigt/transaktioner">Transaktioner</a>
             <a href="/oversigt/budget">Budgetter</a>
-            <a href="/oversigt/tilfoej-ny-transaktion">Tilføj transaktion</a>
+            <a href="/oversigt/statistik">Statistik</a>
           </nav>
 
           <form className="sidebar-logout" action={logUd}>
@@ -251,39 +253,40 @@ export default async function OversigtPage({
             </article>
           </div>
 
-          <section className="overview-card spending-chart">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Udvikling</p>
-                <h2>Dine seneste transaktioner</h2>
-              </div>
-            </div>
+     
+  <section className="overview-card spending-chart">
+  <div className="section-heading">
+    <div>
+      <p className="eyebrow">Udvikling</p>
+      <h2>Dine seneste transaktioner</h2>
+    </div>
+  </div>
 
-            {chartTransactions.length === 0 ? (
-              <p className="empty-state">Tilføj din første transaktion.</p>
-            ) : (
-              <div className="bar-chart">
-                {chartTransactions.map((transaction) => (
-                  <div className="chart-column" key={transaction.id}>
-                    <div
-                      className={
-                        transaction.type === "INCOME"
-                          ? "chart-bar income-bar"
-                          : "chart-bar expense-bar"
-                      }
-                      style={{
-                        height: `${
-                          (Number(transaction.amount) /
-                            largestTransactionAmount) *
-                          100
-                        }%`,
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+  {chartTransactions.length === 0 ? (
+    <p className="empty-state">Tilføj din første transaktion.</p>
+  ) : (
+    <div className="bar-chart">
+      {chartTransactions.map((transaction) => (
+        <div className="chart-column" key={transaction.id}>
+          <div
+            className={
+              transaction.type === "INCOME"
+                ? "chart-bar income-bar"
+                : "chart-bar expense-bar"
+            }
+            style={{
+              height: `${
+                (Number(transaction.amount) / largestTransactionAmount) * 100
+              }%`,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  )}
+</section>
+
+  
 
           <section className="overview-card" id="transaktioner">
             <div className="section-heading">

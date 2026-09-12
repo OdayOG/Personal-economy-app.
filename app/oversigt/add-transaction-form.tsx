@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AddTransactionForm() {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -37,6 +39,7 @@ export default function AddTransactionForm() {
 
       setMessage("Transaktionen er gemt.");
       event.currentTarget.reset();
+      router.refresh();
     } catch {
       setMessage("Der opstod en fejl. Prøv igen.");
     } finally {
@@ -45,36 +48,50 @@ export default function AddTransactionForm() {
   }
 
   return (
-    <section className="account-card">
-      <p className="small-title">Ny transaktion</p>
-      <h2>Tilføj indtægt eller udgift</h2>
+    <section className="dashboard-card transaction-form-card">
+      <div className="card-heading">
+        <p className="small-title">Ny transaktion</p>
+        <h2>Tilføj indtægt eller udgift</h2>
+      </div>
 
-      <form className="account-form" onSubmit={handleSubmit}>
-        <label htmlFor="type">Type</label>
-        <select id="type" name="type" defaultValue="EXPENSE">
-          <option value="EXPENSE">Udgift</option>
-          <option value="INCOME">Indtægt</option>
-        </select>
+      <form className="transaction-form" onSubmit={handleSubmit}>
+        <div className="transaction-fields">
+          <label>
+            Type
+            <select name="type" defaultValue="EXPENSE">
+              <option value="EXPENSE">Udgift</option>
+              <option value="INCOME">Indtægt</option>
+            </select>
+          </label>
 
-        <label htmlFor="amount">Beløb</label>
-        <input
-          id="amount"
-          name="amount"
-          type="number"
-          min="0.01"
-          step="0.01"
-          placeholder="Fx 125.50"
-          required
-        />
+          <label>
+            Beløb
+            <input
+              name="amount"
+              type="number"
+              min="0.01"
+              step="0.01"
+              placeholder="Fx 125.50"
+              required
+            />
+          </label>
 
-        <label htmlFor="category">Kategori</label>
-        <input
-          id="category"
-          name="category"
-          list="categories"
-          placeholder="Fx Mad"
-          required
-        />
+          <label>
+            Kategori
+            <input
+              name="category"
+              list="categories"
+              placeholder="Fx Mad"
+              required
+            />
+          </label>
+
+          <label>
+            Dato
+            <input name="date" type="date" required />
+          </label>
+        </div>
+
         <datalist id="categories">
           <option value="Mad" />
           <option value="Transport" />
@@ -84,22 +101,20 @@ export default function AddTransactionForm() {
           <option value="Andet" />
         </datalist>
 
-        <label htmlFor="description">Beskrivelse (valgfri)</label>
-        <input
-          id="description"
-          name="description"
-          type="text"
-          placeholder="Fx Indkøb i Netto"
-        />
+        <label>
+          Beskrivelse <span>(valgfri)</span>
+          <input
+            name="description"
+            type="text"
+            placeholder="Fx Indkøb i Netto"
+          />
+        </label>
 
-        <label htmlFor="date">Dato</label>
-        <input id="date" name="date" type="date" required />
-
-        <button type="submit" disabled={isLoading}>
+        <button className="save-button" type="submit" disabled={isLoading}>
           {isLoading ? "Gemmer..." : "Gem transaktion"}
         </button>
 
-        {message && <p>{message}</p>}
+        {message && <p className="form-message">{message}</p>}
       </form>
     </section>
   );

@@ -2,7 +2,14 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { deleteSession, getCurrentUser } from "@/app/lib/session";
 import { prisma } from "@/app/lib/prisma";
-import AddTransactionForm from "./add-transaction-form";
+
+
+function formatAmount(amount: number) {
+  return new Intl.NumberFormat("da-DK", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
 
 async function logUd() {
   "use server";
@@ -96,114 +103,311 @@ export default async function OversigtPage() {
     },
   });
 
+  const incomeTotal = transactions
+    .filter((transaction) => transaction.type === "INCOME")
+    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+
+  const expenseTotal = transactions
+    .filter((transaction) => transaction.type === "EXPENSE")
+    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+
+  const balance = incomeTotal - expenseTotal;
+
+  const categories = transactions
+    .filter((transaction) => transaction.type === "EXPENSE")
+    .reduce<Record<string, number>>((totals, transaction) => {
+      totals[transaction.category] =
+        (totals[transaction.category] || 0) + Number(transaction.amount);
+
+      return totals;
+    }, {});
+
+  const categoryItems = Object.entries(categories).sort(
+    ([, firstAmount], [, secondAmount]) => secondAmount - firstAmount
+  );
+
+  const largestCategoryAmount = Math.max(
+    ...categoryItems.map(([, amount]) => amount),
+    1
+  );
+
+  const chartTransactions = transactions.slice(0, 10).reverse();
+  const largestTransactionAmount = Math.max(
+    ...chartTransactions.map((transaction) => Number(transaction.amount)),
+    1
+  );
+
   return (
-    <main className="account-page">
-      <section className="account-card">
-        <p className="small-title">Dit overblik</p>
-        <h1>Hej, {user.name}!</h1>
-        <p>Du er logget ind og kan nu se din personlige økonomi.</p>
+    <main className="finance-dashboard">
+      <div className="finance-shell">
+        <aside className="finance-sidebar">
+          <a className="finance-logo" href="/">
+            Personlig <span>økonomi</span>
+          </a>
 
-        <form action={logUd}>
-          <button type="submit">Log ud</button>
-        </form>
-      </section>
+          <div className="profile-summary">
+            <div className="profile-avatar">{user.name.charAt(0)}</div>
+            <div>
+              <strong>{user.name}</strong>
+              <span>{user.email}</span>
+            </div>
+          </div>
 
-      <AddTransactionForm />
+          <nav className="finance-nav">
+            <a className="active" href="/oversigt">
+              Oversigt
+            </a>
+            <a href="#transaktioner">Transaktioner</a>
+            <a href="/oversigt/tilfoej-ny-transaktion">Tilføj transaktion</a>
+          </nav>
 
-      <section className="account-card">
-        <p className="small-title">Dine transaktioner</p>
-        <h2>Seneste transaktioner</h2>
+          <form className="sidebar-logout" action={logUd}>
+            <button type="submit">Log ud</button>
+          </form>
+        </aside>
 
-        {transactions.length === 0 ? (
-          <p>Du har endnu ingen transaktioner.</p>
-        ) : (
-          <ul>
-            {transactions.map((transaction) => (
-              <li key={transaction.id}>
-                <strong>
-                  {transaction.type === "INCOME" ? "Indtægt" : "Udgift"}:
-                </strong>{" "}
-                {transaction.category} — {transaction.amount.toFixed(2)} kr.
-                {transaction.description && ` (${transaction.description})`}
-                {" — "}
-                {transaction.date.toLocaleDateString("da-DK")}
+        <section className="finance-main">
+          <header className="finance-header">
+            <div>
+              <p className="eyebrow">Dit økonomiske overblik</p>
+              <h1>Goddag, {user.name}!</h1>
+              <p>Her er status på din økonomi.</p>
+            </div>
 
-                <form action={sletTransaktion}>
-                  <input
-                    type="hidden"
-                    name="transactionId"
-                    value={transaction.id}
-                  />
-                  <button type="submit">Slet</button>
-                </form>
+            <a className="add-transaction-link" href="/oversigt/tilfoej-ny-transaktion">
+              + Tilføj transaktion
+            </a>
+          </header>
 
-                <details>
-                  <summary>Rediger</summary>
+          <div className="summary-cards">
+            <article className="summary-card balance-card">
+              <span>Samlet balance</span>
+              <strong className={balance >= 0 ? "positive" : "negative"}>
+                {balance >= 0 ? "+" : "−"} {formatAmount(Math.abs(balance))} kr.
+              </strong>
+            </article>
 
-                  <form action={redigerTransaktion}>
-                    <input
-                      type="hidden"
-                      name="transactionId"
-                      value={transaction.id}
+            <article className="summary-card">
+              <span>Indtægter</span>
+              <strong className="positive">
+                + {formatAmount(incomeTotal)} kr.
+              </strong>
+            </article>
+
+            <article className="summary-card">
+              <span>Udgifter</span>
+              <strong className="negative">
+                − {formatAmount(expenseTotal)} kr.
+              </strong>
+            </article>
+          </div>
+
+          <section className="overview-card spending-chart">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Udvikling</p>
+                <h2>Dine seneste transaktioner</h2>
+              </div>
+            </div>
+
+            {chartTransactions.length === 0 ? (
+              <p className="empty-state">Tilføj din første transaktion.</p>
+            ) : (
+              <div className="bar-chart">
+                {chartTransactions.map((transaction) => (
+                  <div className="chart-column" key={transaction.id}>
+                    <div
+                      className={
+                        transaction.type === "INCOME"
+                          ? "chart-bar income-bar"
+                          : "chart-bar expense-bar"
+                      }
+                      style={{
+                        height: `${
+                          (Number(transaction.amount) /
+                            largestTransactionAmount) *
+                          100
+                        }%`,
+                      }}
                     />
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
 
-                    <label>
-                      Type
-                      <select name="type" defaultValue={transaction.type}>
-                        <option value="EXPENSE">Udgift</option>
-                        <option value="INCOME">Indtægt</option>
-                      </select>
-                    </label>
+          <section className="overview-card" id="transaktioner">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Historik</p>
+                <h2>Seneste transaktioner</h2>
+              </div>
+              <span>{transactions.length} i alt</span>
+            </div>
 
-                    <label>
-                      Beløb
-                      <input
-                        name="amount"
-                        type="number"
-                        min="0.01"
-                        step="0.01"
-                        defaultValue={transaction.amount.toString()}
-                        required
+            {transactions.length === 0 ? (
+              <p className="empty-state">Du har endnu ingen transaktioner.</p>
+            ) : (
+              <div className="finance-transaction-list">
+                {transactions.map((transaction) => (
+                  <article className="finance-transaction" key={transaction.id}>
+                    <div
+                      className={
+                        transaction.type === "INCOME"
+                          ? "transaction-icon income-icon"
+                          : "transaction-icon expense-icon"
+                      }
+                    >
+                      {transaction.type === "INCOME" ? "↗" : "↘"}
+                    </div>
+
+                    <div className="transaction-copy">
+                      <strong>{transaction.category}</strong>
+                      <span>
+                        {transaction.description || "Ingen beskrivelse"} ·{" "}
+                        {transaction.date.toLocaleDateString("da-DK")}
+                      </span>
+                    </div>
+
+                    <strong
+                      className={
+                        transaction.type === "INCOME"
+                          ? "positive transaction-value"
+                          : "negative transaction-value"
+                      }
+                    >
+                      {transaction.type === "INCOME" ? "+" : "−"}{" "}
+                      {formatAmount(Number(transaction.amount))} kr.
+                    </strong>
+
+                    <div className="transaction-controls">
+                      <details>
+                        <summary>Rediger</summary>
+
+                        <form
+                          className="edit-transaction-form"
+                          action={redigerTransaktion}
+                        >
+                          <input
+                            type="hidden"
+                            name="transactionId"
+                            value={transaction.id}
+                          />
+
+                          <label>
+                            Type
+                            <select name="type" defaultValue={transaction.type}>
+                              <option value="EXPENSE">Udgift</option>
+                              <option value="INCOME">Indtægt</option>
+                            </select>
+                          </label>
+
+                          <label>
+                            Beløb
+                            <input
+                              name="amount"
+                              type="number"
+                              min="0.01"
+                              step="0.01"
+                              defaultValue={transaction.amount.toString()}
+                              required
+                            />
+                          </label>
+
+                          <label>
+                            Kategori
+                            <input
+                              name="category"
+                              defaultValue={transaction.category}
+                              required
+                            />
+                          </label>
+
+                          <label>
+                            Beskrivelse
+                            <input
+                              name="description"
+                              defaultValue={transaction.description ?? ""}
+                            />
+                          </label>
+
+                          <label>
+                            Dato
+                            <input
+                              name="date"
+                              type="date"
+                              defaultValue={transaction.date
+                                .toISOString()
+                                .slice(0, 10)}
+                              required
+                            />
+                          </label>
+
+                          <button className="save-button" type="submit">
+                            Gem ændringer
+                          </button>
+                        </form>
+                      </details>
+
+                      <form action={sletTransaktion}>
+                        <input
+                          type="hidden"
+                          name="transactionId"
+                          value={transaction.id}
+                        />
+                        <button className="delete-button" type="submit">
+                          Slet
+                        </button>
+                      </form>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+        </section>
+
+        <aside className="finance-insights">
+          <section className="insight-card">
+            <p className="eyebrow">Forbrug pr. kategori</p>
+            <h2>Hvor går pengene hen?</h2>
+
+            {categoryItems.length === 0 ? (
+              <p className="insight-empty">Ingen udgifter endnu.</p>
+            ) : (
+              <div className="category-list">
+                {categoryItems.map(([category, amount]) => (
+                  <div className="category-item" key={category}>
+                    <div>
+                      <span>{category}</span>
+                      <strong>{formatAmount(amount)} kr.</strong>
+                    </div>
+
+                    <div className="category-track">
+                      <div
+                        className="category-progress"
+                        style={{
+                          width: `${(amount / largestCategoryAmount) * 100}%`,
+                        }}
                       />
-                    </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
 
-                    <label>
-                      Kategori
-                      <input
-                        name="category"
-                        defaultValue={transaction.category}
-                        required
-                      />
-                    </label>
-
-                    <label>
-                      Beskrivelse
-                      <input
-                        name="description"
-                        defaultValue={transaction.description ?? ""}
-                      />
-                    </label>
-
-                    <label>
-                      Dato
-                      <input
-                        name="date"
-                        type="date"
-                        defaultValue={transaction.date
-                          .toISOString()
-                          .slice(0, 10)}
-                        required
-                      />
-                    </label>
-
-                    <button type="submit">Gem ændringer</button>
-                  </form>
-                </details>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          <section className="tips-card">
+            <p className="eyebrow">Lille tip</p>
+            <h2>Få mere overblik</h2>
+            <p>
+              Registrér dine udgifter løbende, så bliver dit økonomiske
+              overblik mere præcist.
+            </p>
+          </section>
+        </aside>
+      </div>
     </main>
   );
 }

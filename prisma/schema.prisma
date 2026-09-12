@@ -24,6 +24,7 @@ model User {
   updatedAt    DateTime @updatedAt
   sessions Session[]
   transactions Transaction[]
+  budgets Budget[]
 }
 model Session {
   id        String   @id @default(cuid())
@@ -50,4 +51,17 @@ model Transaction {
 
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+model Budget {
+  id        Int      @id @default(autoincrement())
+  amount    Decimal  @db.Decimal(10, 2)
+  category  String
+  month     DateTime @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, month])
 }

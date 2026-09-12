@@ -34,7 +34,8 @@ export default function AddTransactionForm() {
     setMessage("");
     setIsLoading(true);
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     const selectedCategory = formData.get("category");
     const customCategory = formData.get("customCategory");
@@ -65,7 +66,7 @@ export default function AddTransactionForm() {
       }
 
       setMessage("Transaktionen er gemt.");
-      event.currentTarget.reset();
+      form.reset();
       setType("EXPENSE");
       setCategory("");
       router.refresh();

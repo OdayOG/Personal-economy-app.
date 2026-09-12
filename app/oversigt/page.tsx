@@ -125,6 +125,19 @@ export default async function OversigtPage({
     },
   });
 
+  const budgets = await prisma.budget.findMany({
+    where: {
+      userId: user.id,
+      month: {
+        gte: monthStart,
+        lt: nextMonth,
+      },
+    },
+    orderBy: {
+      category: "asc",
+    },
+  });
+
   const incomeTotal = transactions
     .filter((transaction) => transaction.type === "INCOME")
     .reduce((total, transaction) => total + Number(transaction.amount), 0);
@@ -152,7 +165,19 @@ export default async function OversigtPage({
     ...categoryItems.map(([, amount]) => amount),
     1
   );
+  const budgetItems = budgets.map((budget) => {
+    const spent = categories[budget.category] || 0;
+    const budgetAmount = Number(budget.amount);
+    const percentage =
+      budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
 
+    return {
+      category: budget.category,
+      spent,
+      budgetAmount,
+      percentage,
+    };
+  });
   const chartTransactions = transactions.slice(0, 10).reverse();
   const largestTransactionAmount = Math.max(
     ...chartTransactions.map((transaction) => Number(transaction.amount)),
@@ -180,6 +205,7 @@ export default async function OversigtPage({
               Oversigt
             </a>
             <a href="#transaktioner">Transaktioner</a>
+            <a href="/oversigt/budget">Budgetter</a>
             <a href="/oversigt/tilfoej-ny-transaktion">Tilføj transaktion</a>
           </nav>
 
@@ -393,6 +419,53 @@ export default async function OversigtPage({
 
         <aside className="finance-insights">
           <section className="insight-card">
+            <section className="insight-card budget-card">
+  <p className="eyebrow">Månedens budgetter</p>
+  <h2>Forbrug mod budget</h2>
+
+  {budgetItems.length === 0 ? (
+    <p className="insight-empty">
+      Du har ikke sat et budget for denne måned endnu.
+    </p>
+  ) : (
+    <div className="budget-list">
+      {budgetItems.map((budget) => (
+        <div className="budget-item" key={budget.category}>
+          <div className="budget-heading">
+            <strong>{budget.category}</strong>
+            <span
+              className={
+                budget.percentage >= 100
+                  ? "budget-warning"
+                  : "budget-percentage"
+              }
+            >
+              {Math.round(budget.percentage)}%
+            </span>
+          </div>
+
+          <div className="budget-track">
+            <div
+              className={
+                budget.percentage >= 100
+                  ? "budget-fill budget-fill-over"
+                  : "budget-fill"
+              }
+              style={{
+                width: `${Math.min(budget.percentage, 100)}%`,
+              }}
+            />
+          </div>
+
+          <p>
+            {formatAmount(budget.spent)} kr. brugt af{" "}
+            {formatAmount(budget.budgetAmount)} kr.
+          </p>
+        </div>
+      ))}
+    </div>
+  )}
+</section>
             <p className="eyebrow">Forbrug pr. kategori</p>
             <h2>Hvor går pengene hen?</h2>
 

@@ -1,49 +1,53 @@
-# Personlig økonomi-app
+# Personal Finance App
 
-En webapp, der hjælper brugeren med at få overblik over sin økonomi.
+A web application that helps users get a clear overview of their finances.
 
-## Formål
+## Purpose
 
-Appen skal gøre det nemt at:
+The app makes it easy to:
 
-- registrere indtægter og udgifter
-- organisere transaktioner i kategorier
-- sætte månedlige budgetter
-- se forbrug og økonomisk udvikling i et dashboard
-- beskytte hver brugers private data med login
+- record income and expenses
+- organise transactions into categories
+- set monthly budgets
+- view spending and financial progress in a dashboard
+- protect each user's private data with login
 
-## Planlagte funktioner
+## Features
 
-- Brugerregistrering, login og profil
-- Indtægter og udgifter
-- Kategorier som mad, husleje og transport
-- Månedligt budget pr. kategori
-- Dashboard med balance, seneste transaktioner og forbrug
-- Statistik og grafer
+- User registration, login, and profile
+- Income and expenses
+- Categories such as food, rent, and transport
+- Monthly budgets by category
+- Dashboard with balance, recent transactions, and spending
+- Statistics and charts
 
-## Teknologier
+## Technologies
 
 - Next.js
 - TypeScript
 - CSS
-- MySQL (planlagt)
-- Git og GitHub
+- MySQL
+- Git and GitHub
+- Railway
 
-## Start appen lokalt
+## Run the app locally
 
-1. Åbn projektmappen i VS Code.
-2. Åbn en terminal.
-3. Kør kommandoen:
+1. Open the project folder in VS Code.
+2. Open a terminal.
+3. Run:
 
 ```powershell
 npm.cmd run dev
 ```
 
-4. Åbn [http://localhost:3000](http://localhost:3000) i browseren.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-   !!Testing!! Mulighed for teste webapplikationen via browseren online → https://personal-economy-app-production.up.railway.app/
-   
+## Test the app online
 
-## Projektplan
+You can test the deployed version here:
 
-Udviklingsopgaverne planlægges og følges i Linear-projektet **Personlig økonomi-app**.
+[https://personal-economy-app-production.up.railway.app/](https://personal-economy-app-production.up.railway.app/)
+
+## Project planning
+
+Development tasks are planned and tracked in the Linear project **Personal Finance App**.

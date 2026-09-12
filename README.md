@@ -41,7 +41,7 @@ npm.cmd run dev
 
 4. Åbn [http://localhost:3000](http://localhost:3000) i browseren.
 
-   !!Testing!! Mulighed for teste webapplikationen via browseren online → personal-economy-app-production.up.railway.app
+   !!Testing!! Mulighed for teste webapplikationen via browseren online → https://personal-economy-app-production.up.railway.app/
    
 
 ## Projektplan
